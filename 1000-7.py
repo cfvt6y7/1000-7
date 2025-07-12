@@ -52,7 +52,7 @@ while x > 0:
     slow_print(f"{y} - 7 = {x} ", delay=0.3)
     tocka()
 
-    if random.randint(1, 5) == 1:
+    if random.randint(1, 10) == 1:
         play_sound()
         show_image_with_timer("Screenshot_12.png", 10)
 
