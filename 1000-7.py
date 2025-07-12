@@ -5,8 +5,6 @@ import pygame
 import threading
 import os
 
-pygame.mixer.init()
-
 def slow_print(text, delay=0.1):
     for char_in_text in text:
         print(char_in_text, end="", flush=True)
@@ -17,28 +15,34 @@ def tocka():
         slow_print(". ", delay=0.5)
     return ""
 
-def show_image_pygame_and_close(image_path, display_time_seconds=3):
-    try:
-        pygame.display.init()
-        image = pygame.image.load(image_path)
-        image_width, image_height = image.get_size()
-        screen = pygame.display.set_mode((image_width, image_height))
-        pygame.display.set_caption("1000-7") # Название окна
-        screen.blit(image, (0, 0))
-        pygame.display.flip()
-        time.sleep(display_time_seconds)
-        pygame.display.quit()
-
-    except pygame.error as e:
-        print(f"Ошибка Pygame при загрузке или отображении картинки: {e}")
-    except FileNotFoundError:
-        print(f"Ошибка: Файл '{image_path}' не найден.")
-    except Exception as e:
-        print(f"Произошла непредвиденная ошибка: {e}")
-
 def play_sound():
+    pygame.mixer.init()
     pygame.mixer.music.load("saund.mp3")
     pygame.mixer.music.play()
+
+def show_image_with_timer(image_path, duration=10):
+    pygame.init()
+    img = pygame.image.load(image_path)
+    width, height = img.get_size()
+    screen = pygame.display.set_mode((width, height))
+    pygame.display.set_caption("Image Display")
+
+    screen.blit(img, (0, 0))
+    pygame.display.flip()
+
+    start_time = time.time()
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        if time.time() - start_time > duration:
+            running = False
+
+        pygame.time.Clock().tick(30)
+
+    pygame.quit()
 
 x = 1000
 while x > 0:
@@ -49,10 +53,8 @@ while x > 0:
     tocka()
 
     if random.randint(1, 5) == 1:
-
-        threading.Thread(target=show_image_pygame_and_close, args=("Screenshot_12.png", 17)).start()
-
-        threading.Thread(target=play_sound).start()
+        play_sound()
+        show_image_with_timer("Screenshot_12.png", 10)
 
     print()
     time.sleep(0.05)
